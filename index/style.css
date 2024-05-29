@@ -1,0 +1,45 @@
+body {
+ font: 13pt Arial, Helvetica, sans-serif; /* Шрифт теста */
+ background: #e6c7ae; /* Цвет фона */
+ }
+ h2 {
+ font-size: 18px; /* Размер шрифта в заголовке */
+ color: #080808; /* Цвет заголовка */
+ margin-top: 0; /* Отступ сверху */
+ font-family: Cursive;
+ }
+ .container {
+ width: 1100px; /* Ширина слоя */
+ margin: 0 auto; /* Выравнивнить весь блок по центру */
+ background: #bbaee6; /* Цвет фона левой колонки */
+ 
+ }
+ .header {
+ font-size: 38px; /* Размер текста в шапке */
+ text-align: center; /* Выравнивание текст шапки по центру */
+ padding: 5px; /* Отступы внутри блока шапки */
+ background: #aee6b3; /* Цвет фона шапки */
+ color: #fff; /* Цвет текста */
+ }
+ .sidebar {
+ margin-top: 10px;
+ width: 110px; /* Ширина блока */
+ padding: 0 10px; /* Отступы внутри левого блока */
+ float: right; /* Обтекание блока по левому краю */
+ }
+ .content {
+ margin-right: 130px; /* Отступ справа */
+ padding: 10px; /* Отступы внутри правого блока */
+ background: #fff; /* Цвет фона правого блока */
+ font-family: Cursive
+ }
+ .footer {
+ background: #b9e6a2; /* Цвет фона нижнего блока-подвала */
+ color: #fff; /* Цвет текста подвала */
+ padding: 5px; /* Отступы внутри блока */
+ clear: right; /* Отменяем действие float */
+ }
+img.image
+ {	
+ 
+ }

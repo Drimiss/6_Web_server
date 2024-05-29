@@ -1,31 +1,82 @@
 import socket
+from datetime import datetime
+from os.path import join, isfile
+from threading import Thread
+from settings import *
 
-sock = socket.socket()
 
-try:
-    sock.bind(('', 80))
-    print("Using port 80")
-except OSError:
-    sock.bind(('', 8080))
-    print("Using port 8080")
+def add_log(date, addr, path):
+    with open('log.txt', 'a') as logs:
+        logs.write(f'<{date}> {addr}: {path}\n')
 
-sock.listen(5)
 
-conn, addr = sock.accept()
-print("Connected", addr)
+def read_file(path):
+    return open(path, 'rb').read()
 
-data = conn.recv(8192)
-msg = data.decode()
 
-print(msg)
+def generate_path(request):
+    path = request.split('\n')[0].split(' ')[1][1:]
+    if not path:
+        path = DEFAULT_PATH
+    return join(DIRECTORY, path)
 
-resp = """HTTP/1.1 200 OK
-Server: SelfMadeServer v0.0.1
-Content-type: text/html
-Connection: close
 
-Hello, webworld!"""
+def get_extension(path):
+    return path.split('.')[-1]
 
-conn.send(resp.encode())
 
-conn.close()
+def get_code(path, extension):
+    if not isfile(path):
+        return 404
+    elif extension not in ALLOWED_TYPES:
+        return 403
+    else:
+        return 200
+
+
+def get_date():
+    return datetime.now().strftime('%a, %d %b %Y %H:%M:%S GTM')
+
+
+def process(request, addr):
+    path = generate_path(request)
+    extension = get_extension(path)
+    code = get_code(path, extension)
+    date = get_date()
+    body = b''
+    if code == 200:
+        body = read_file(path)
+    else:
+        extension = 'html'
+    response = RESPONSE_PATTERN.format(code, CODES[code], date, TYPES[extension], len(body)).encode() + body
+    add_log(date, addr, path)
+    return response
+
+
+def handle(conn: socket.socket, addr):
+    with conn:
+        request = conn.recv(BUFFER_SIZE).decode()
+        print(request)
+        if request:
+            print(request)
+            response = process(request, addr)
+            conn.send(response)
+
+
+def accept(sock):
+    while True:
+        conn, addr = sock.accept()
+        print(f'Подключен {addr}')
+        Thread(target=handle, args=[conn, addr]).start()
+
+
+def main():
+    sock = socket.socket()
+    sock.bind((HOST, PORT))
+    print((HOST, PORT))
+    sock.listen(10)
+    accept(sock)
+
+
+if __name__ == '__main__':
+    main()
